@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "format": "npx prettier --write ."
+    "format": "npx prettier --write .",
+    "lint": "npx eslint . --max-warnings=0"
   },
   "keywords": [],
   "author": "Michał Czyżykowski",
@@ -12,8 +13,12 @@
   "devDependencies": {
     "@eslint/js": "^9.16.0",
     "@playwright/test": "^1.49.0",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.0",
     "@types/node": "^22.10.1",
     "eslint": "^9.16.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-playwright": "^2.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
     "globals": "^15.13.0",
     "prettier": "^3.4.2",
     "typescript-eslint": "^8.17.0"
