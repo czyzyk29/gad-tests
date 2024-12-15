@@ -14,9 +14,9 @@ test.describe('Verify main menu buttons', () => {
       const commentsPage = new CommentsPage(page);
 
       await articlesPage.goTo();
-      await commentsPage.mainMenu.commentsButton.click();
-
+      await articlesPage.mainMenu.commentsButton.click();
       const title = await commentsPage.title();
+
       expect(title).toContain('Comments');
     },
   );
@@ -39,7 +39,7 @@ test.describe('Verify main menu buttons', () => {
   );
 
   test(
-    'Home menu buttons navigate to home page',
+    'Home menu link navigate to main page',
     {
       tag: ['@GAD-R01-03', '@smoke'],
     },
