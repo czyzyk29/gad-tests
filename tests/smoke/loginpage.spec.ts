@@ -12,6 +12,7 @@ test.describe('login tests', () => {
     async ({ page }) => {
       const login = testUser1.userEmail;
       const password = testUser1.userPassword;
+
       const loginPage = new LoginPage(page);
       await loginPage.goTo();
 
