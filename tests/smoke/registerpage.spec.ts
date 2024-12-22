@@ -1,6 +1,7 @@
 import { LoginPage } from '../../src/pages/login.page';
 import { RegisterPage } from '../../src/pages/register.page';
 import { WelcomePage } from '../../src/pages/welcome.page';
+import { faker } from '@faker-js/faker';
 import { expect, test } from '@playwright/test';
 
 test.describe('register tests', () => {
@@ -10,10 +11,13 @@ test.describe('register tests', () => {
       tag: ['@GAD-R03-01', '@GAD-R03-02', '@GAD-R03-03', '@smoke'],
     },
     async ({ page }) => {
-      const firstName = 'Jan';
-      const lastName = 'Kowal';
-      const email = `test${new Date().getTime()}@test.test1`;
-      const password = 'test';
+      const firstName = faker.person.firstName();
+      const lastName = faker.person.lastName();
+      const email = faker.internet.email({
+        firstName: firstName,
+        lastName: lastName,
+      });
+      const password = faker.internet.password();
       const expectSuccessPopup = 'User created';
 
       const registerPage = new RegisterPage(page);
