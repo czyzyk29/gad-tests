@@ -11,8 +11,8 @@ test.describe('register tests', () => {
       tag: ['@GAD-R03-01', '@GAD-R03-02', '@GAD-R03-03', '@smoke'],
     },
     async ({ page }) => {
-      const firstName = faker.person.firstName();
-      const lastName = faker.person.lastName();
+      const firstName = faker.person.firstName().replace(/[^A-Za-z]/g, '');
+      const lastName = faker.person.lastName().replace(/[^A-Za-z]/g, '');
       const email = faker.internet.email({
         firstName: firstName,
         lastName: lastName,
