@@ -11,15 +11,11 @@ test.describe('login tests', () => {
       tag: ['@GAD-R01-02', '@smoke'],
     },
     async ({ page }) => {
-      const loginUserData: LoginUser = {
-        userEmail: testUser1.userEmail,
-        userPassword: testUser1.userPassword,
-      };
-
       const loginPage = new LoginPage(page);
       await loginPage.goTo();
 
-      await loginPage.loginNew(loginUserData);
+      await loginPage.login(testUser1);
+
       const welcomePage = new WelcomePage(page);
       const title = await welcomePage.title();
 
@@ -32,12 +28,15 @@ test.describe('login tests', () => {
       tag: ['@GAD-R01-02', '@smoke'],
     },
     async ({ page }) => {
-      const login = testUser1.userEmail;
-      const password = 'wrong_pass';
+      const loginUserData: LoginUser = {
+        userEmail: testUser1.userEmail,
+        userPassword: 'wrong_pass',
+      };
+
       const loginPage = new LoginPage(page);
       await loginPage.goTo();
 
-      await loginPage.login(login, password);
+      await loginPage.login(loginUserData);
 
       await expect
         .soft(loginPage.loginPasswordError)

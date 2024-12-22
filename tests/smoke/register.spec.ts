@@ -39,7 +39,7 @@ test.describe('register tests', () => {
       const titleLogin = await loginPage.title();
       expect.soft(titleLogin).toContain('Login');
 
-      await loginPage.loginNew(registerUserData);
+      await loginPage.login(registerUserData);
 
       const welcomePage = new WelcomePage(page);
       const titleWelcome = await welcomePage.title();
