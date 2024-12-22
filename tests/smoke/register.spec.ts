@@ -1,8 +1,7 @@
-import { RegisterUser } from '../../src/models/user.model';
+import { randomUserData } from '../../src/factory/user.factory';
 import { LoginPage } from '../../src/pages/login.page';
 import { RegisterPage } from '../../src/pages/register.page';
 import { WelcomePage } from '../../src/pages/welcome.page';
-import { faker } from '@faker-js/faker/locale/pl';
 import { expect, test } from '@playwright/test';
 
 test.describe('register tests', () => {
@@ -12,17 +11,7 @@ test.describe('register tests', () => {
       tag: ['@GAD-R03-01', '@GAD-R03-02', '@GAD-R03-03', '@smoke'],
     },
     async ({ page }) => {
-      const registerUserData: RegisterUser = {
-        userFirstName: faker.person.firstName().replace(/[^A-Za-z]/g, ''),
-        userLastName: faker.person.lastName().replace(/[^A-Za-z]/g, ''),
-        userEmail: '',
-        userPassword: faker.internet.password(),
-      };
-
-      registerUserData.userEmail = faker.internet.email({
-        firstName: registerUserData.userFirstName,
-        lastName: registerUserData.userLastName,
-      });
+      const registerUserData = randomUserData();
 
       const expectSuccessPopup = 'User created';
 
@@ -53,12 +42,8 @@ test.describe('register tests', () => {
       tag: ['@GAD-R03-04', '@smoke'],
     },
     async ({ page }) => {
-      const registerUserData: RegisterUser = {
-        userFirstName: faker.person.firstName().replace(/[^A-Za-z]/g, ''),
-        userLastName: faker.person.lastName().replace(/[^A-Za-z]/g, ''),
-        userEmail: 'invalid email',
-        userPassword: faker.internet.password(),
-      };
+      const registerUserData = randomUserData();
+      registerUserData.userEmail = 'XXXX';
 
       const expectedErrorEmail = 'Please provide a valid email address';
 
@@ -79,16 +64,13 @@ test.describe('register tests', () => {
     async ({ page }) => {
       const expectedErrorEmail = 'This field is required';
       const registerPage = new RegisterPage(page);
+      const registerUserData = randomUserData();
 
       await registerPage.goTo();
 
-      await registerPage.firstNameInput.fill(
-        faker.person.firstName().replace(/[^A-Za-z]/g, ''),
-      );
-      await registerPage.lastNameInput.fill(
-        faker.person.lastName().replace(/[^A-Za-z]/g, ''),
-      );
-      await registerPage.passwordInput.fill(faker.internet.password());
+      await registerPage.firstNameInput.fill(registerUserData.userFirstName);
+      await registerPage.lastNameInput.fill(registerUserData.userLastName);
+      await registerPage.passwordInput.fill(registerUserData.userPassword);
 
       await registerPage.registerButton.click();
 
