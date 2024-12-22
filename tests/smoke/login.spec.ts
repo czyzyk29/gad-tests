@@ -11,18 +11,14 @@ test.describe('login tests', () => {
       tag: ['@GAD-R01-02', '@smoke'],
     },
     async ({ page }) => {
-      // const login = testUser1.userEmail;
-      // const password = testUser1.userPassword;
-
       const loginUserData: LoginUser = {
-        login: testUser1.userEmail,
-        password: testUser1.userPassword,
+        userEmail: testUser1.userEmail,
+        userPassword: testUser1.userPassword,
       };
 
       const loginPage = new LoginPage(page);
       await loginPage.goTo();
 
-      //await loginPage.login(loginUserData.login, loginUserData.password);
       await loginPage.loginNew(loginUserData);
       const welcomePage = new WelcomePage(page);
       const title = await welcomePage.title();

@@ -13,15 +13,15 @@ test.describe('register tests', () => {
     },
     async ({ page }) => {
       const registerUserData: RegisterUser = {
-        firstName: faker.person.firstName().replace(/[^A-Za-z]/g, ''),
-        lastName: faker.person.lastName().replace(/[^A-Za-z]/g, ''),
-        email: '',
-        password: faker.internet.password(),
+        userFirstName: faker.person.firstName().replace(/[^A-Za-z]/g, ''),
+        userLastName: faker.person.lastName().replace(/[^A-Za-z]/g, ''),
+        userEmail: '',
+        userPassword: faker.internet.password(),
       };
 
-      registerUserData.email = faker.internet.email({
-        firstName: registerUserData.firstName,
-        lastName: registerUserData.lastName,
+      registerUserData.userEmail = faker.internet.email({
+        firstName: registerUserData.userFirstName,
+        lastName: registerUserData.userLastName,
       });
 
       const expectSuccessPopup = 'User created';
@@ -39,7 +39,7 @@ test.describe('register tests', () => {
       const titleLogin = await loginPage.title();
       expect.soft(titleLogin).toContain('Login');
 
-      await loginPage.login(registerUserData.email, registerUserData.password);
+      await loginPage.loginNew(registerUserData);
 
       const welcomePage = new WelcomePage(page);
       const titleWelcome = await welcomePage.title();
