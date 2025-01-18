@@ -1,5 +1,4 @@
 import { randomNewArticle } from '../src/factory/article.factory';
-import { AddArticleModel } from '../src/models/article.model';
 import { ArticlePage } from '../src/pages/article.page';
 import { ArticlesPage } from '../src/pages/articles.page';
 import { LoginPage } from '../src/pages/login.page';
@@ -11,7 +10,6 @@ test.describe('verify tests', () => {
   let loginPage: LoginPage;
   let articlesPage: ArticlesPage;
   let addArticleView: AddArticleView;
-  let articleData: AddArticleModel;
 
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
@@ -22,8 +20,6 @@ test.describe('verify tests', () => {
     await loginPage.login(testUser1);
     await articlesPage.goTo();
     await articlesPage.addArticleButtonLogged.click();
-
-    articleData = randomNewArticle();
   });
   test(
     'add new article with required data',
@@ -33,6 +29,7 @@ test.describe('verify tests', () => {
     async ({ page }) => {
       //Arrange
       const articlePage = new ArticlePage(page);
+      const articleData = randomNewArticle();
 
       //Act
       await expect.soft(addArticleView.articleViewHeader).toBeVisible();
@@ -52,6 +49,7 @@ test.describe('verify tests', () => {
     async () => {
       //Arrange
       const expectErrorMessage = 'Article was not created';
+      const articleData = randomNewArticle();
       articleData.body = '';
 
       await expect.soft(addArticleView.articleViewHeader).toBeVisible();
@@ -72,7 +70,7 @@ test.describe('verify tests', () => {
     async () => {
       //Arrange
       const expectErrorMessage = 'Article was not created';
-
+      const articleData = randomNewArticle();
       articleData.title = '';
 
       await expect.soft(addArticleView.articleViewHeader).toBeVisible();
@@ -82,6 +80,46 @@ test.describe('verify tests', () => {
 
       //Assert
       await expect(addArticleView.errorPopup).toHaveText(expectErrorMessage);
+    },
+  );
+
+  test(
+    'add new article reject title more than 128',
+    {
+      tag: ['@GAD-R04-02', '@smoke'],
+    },
+    async () => {
+      //Arrange
+      const expectErrorMessage = 'Article was not created';
+      const articleData = randomNewArticle(129);
+
+      await expect.soft(addArticleView.articleViewHeader).toBeVisible();
+
+      //Act
+      await addArticleView.createArticle(articleData);
+
+      //Assert
+      await expect(addArticleView.errorPopup).toHaveText(expectErrorMessage);
+    },
+  );
+
+  test(
+    'add new article succes title = 128',
+    {
+      tag: ['@GAD-R04-02', '@smoke'],
+    },
+    async ({ page }) => {
+      //Arrange
+      const articlePage = new ArticlePage(page);
+      const articleData = randomNewArticle(128);
+
+      await expect.soft(addArticleView.articleViewHeader).toBeVisible();
+
+      //Act
+      await addArticleView.createArticle(articleData);
+
+      //Assert
+      await expect.soft(articlePage.articleTitle).toHaveText(articleData.title);
     },
   );
 });
