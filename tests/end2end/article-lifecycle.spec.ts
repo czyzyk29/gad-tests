@@ -65,7 +65,7 @@ test.describe('create, verify and delete article', () => {
       tag: ['@GAD-R04-04'],
     },
     async () => {
-      //Arange
+      //Arrange
       const noResultsTxt = 'No data';
       await articlesPage.goToArticles(articleData.title);
 
