@@ -1,38 +1,44 @@
 import { randomUserData } from '../../src/factory/user.factory';
+import { RegisterUser } from '../../src/models/user.model';
 import { LoginPage } from '../../src/pages/login.page';
 import { RegisterPage } from '../../src/pages/register.page';
 import { WelcomePage } from '../../src/pages/welcome.page';
 import { expect, test } from '@playwright/test';
 
 test.describe('register tests', () => {
+  let registerPage: RegisterPage;
+  let registerUserData: RegisterUser;
+  test.beforeEach(async ({ page }) => {
+    registerPage = new RegisterPage(page);
+    registerUserData = randomUserData();
+  });
+
   test(
     'Register with required data',
     {
       tag: ['@GAD-R03-01', '@GAD-R03-02', '@GAD-R03-03', '@smoke'],
     },
     async ({ page }) => {
-      const registerUserData = randomUserData();
-
+      //Arrange
       const expectSuccessPopup = 'User created';
+      const loginPage = new LoginPage(page);
+      const welcomePage = new WelcomePage(page);
 
-      const registerPage = new RegisterPage(page);
-
+      //Act
       await registerPage.goTo();
-
       await registerPage.register(registerUserData);
 
       await expect(registerPage.successPopup).toHaveText(expectSuccessPopup);
 
-      const loginPage = new LoginPage(page);
       await loginPage.waitForPageLoginUrl();
       const titleLogin = await loginPage.title();
       expect.soft(titleLogin).toContain('Login');
 
       await loginPage.login(registerUserData);
 
-      const welcomePage = new WelcomePage(page);
       const titleWelcome = await welcomePage.title();
 
+      //Assert
       expect(titleWelcome).toContain('Welcome');
     },
   );
@@ -41,17 +47,16 @@ test.describe('register tests', () => {
     {
       tag: ['@GAD-R03-04', '@smoke'],
     },
-    async ({ page }) => {
-      const registerUserData = randomUserData();
+    async () => {
+      //Arrang
+      const expectedErrorEmail = 'Please provide a valid email address';
       registerUserData.userEmail = 'XXXX';
 
-      const expectedErrorEmail = 'Please provide a valid email address';
-
-      const registerPage = new RegisterPage(page);
-
+      //Act
       await registerPage.goTo();
       await registerPage.register(registerUserData);
 
+      //Assert
       await expect(registerPage.emailErrorText).toHaveText(expectedErrorEmail);
     },
   );
@@ -61,19 +66,18 @@ test.describe('register tests', () => {
     {
       tag: ['@GAD-R03-04', '@smoke'],
     },
-    async ({ page }) => {
+    async () => {
+      //Arrange
       const expectedErrorEmail = 'This field is required';
-      const registerPage = new RegisterPage(page);
-      const registerUserData = randomUserData();
 
+      //Act
       await registerPage.goTo();
-
       await registerPage.firstNameInput.fill(registerUserData.userFirstName);
       await registerPage.lastNameInput.fill(registerUserData.userLastName);
       await registerPage.passwordInput.fill(registerUserData.userPassword);
-
       await registerPage.registerButton.click();
 
+      //Assert
       await expect(registerPage.emailErrorText).toHaveText(expectedErrorEmail);
     },
   );
