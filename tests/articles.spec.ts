@@ -82,44 +82,47 @@ test.describe('verify tests', () => {
       await expect(addArticleView.errorPopup).toHaveText(expectErrorMessage);
     },
   );
+  test.describe('title lenght', () => {
+    test(
+      'add new article reject title more than 128',
+      {
+        tag: ['@GAD-R04-02', '@smoke'],
+      },
+      async () => {
+        //Arrange
+        const expectErrorMessage = 'Article was not created';
+        const articleData = randomNewArticle(129);
 
-  test(
-    'add new article reject title more than 128',
-    {
-      tag: ['@GAD-R04-02', '@smoke'],
-    },
-    async () => {
-      //Arrange
-      const expectErrorMessage = 'Article was not created';
-      const articleData = randomNewArticle(129);
+        await expect.soft(addArticleView.articleViewHeader).toBeVisible();
 
-      await expect.soft(addArticleView.articleViewHeader).toBeVisible();
+        //Act
+        await addArticleView.createArticle(articleData);
 
-      //Act
-      await addArticleView.createArticle(articleData);
+        //Assert
+        await expect(addArticleView.errorPopup).toHaveText(expectErrorMessage);
+      },
+    );
 
-      //Assert
-      await expect(addArticleView.errorPopup).toHaveText(expectErrorMessage);
-    },
-  );
+    test(
+      'add new article succes title = 128',
+      {
+        tag: ['@GAD-R04-02', '@smoke'],
+      },
+      async ({ page }) => {
+        //Arrange
+        const articlePage = new ArticlePage(page);
+        const articleData = randomNewArticle(128);
 
-  test(
-    'add new article succes title = 128',
-    {
-      tag: ['@GAD-R04-02', '@smoke'],
-    },
-    async ({ page }) => {
-      //Arrange
-      const articlePage = new ArticlePage(page);
-      const articleData = randomNewArticle(128);
+        await expect.soft(addArticleView.articleViewHeader).toBeVisible();
 
-      await expect.soft(addArticleView.articleViewHeader).toBeVisible();
+        //Act
+        await addArticleView.createArticle(articleData);
 
-      //Act
-      await addArticleView.createArticle(articleData);
-
-      //Assert
-      await expect.soft(articlePage.articleTitle).toHaveText(articleData.title);
-    },
-  );
+        //Assert
+        await expect
+          .soft(articlePage.articleTitle)
+          .toHaveText(articleData.title);
+      },
+    );
+  });
 });
