@@ -8,7 +8,7 @@ import { AddArticleView } from '../../src/views/add-article.view';
 import { expect, test } from '@playwright/test';
 
 test.describe.configure({ mode: 'serial' });
-test.describe('verify articles', () => {
+test.describe('create, verify and delete article', () => {
   let loginPage: LoginPage;
   let articlesPage: ArticlesPage;
   let articleData: AddArticleModel;
@@ -24,7 +24,7 @@ test.describe('verify articles', () => {
     await articlesPage.goTo();
   });
   test(
-    'add new article with required data',
+    'create new article with required data',
     {
       tag: ['@GAD-R04-02', '@smoke'],
     },
@@ -45,7 +45,7 @@ test.describe('verify articles', () => {
   );
 
   test(
-    'user can access to single article',
+    'access to single article',
     {
       tag: ['@GAD-R04-03'],
     },
@@ -56,6 +56,29 @@ test.describe('verify articles', () => {
       //Assert
       await expect.soft(articlePage.articleTitle).toHaveText(articleData.title);
       await expect.soft(articlePage.articleBody).toHaveText(articleData.body);
+    },
+  );
+
+  test(
+    'delete own single article',
+    {
+      tag: ['@GAD-R04-04'],
+    },
+    async () => {
+      //Arange
+      const noResultsTxt = 'No data';
+      await articlesPage.goToArticles(articleData.title);
+
+      //Act
+      await articlePage.deleteArticle();
+
+      //Assert
+      await articlesPage.waitForPageLoginUrl();
+      const title = await articlesPage.title();
+      expect(title).toContain('Articles');
+
+      await articlesPage.searchArticle(articleData.title);
+      await expect(articlesPage.noResults).toHaveText(noResultsTxt);
     },
   );
 });
