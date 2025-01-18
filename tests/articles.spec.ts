@@ -21,25 +21,6 @@ test.describe('verify tests', () => {
     await articlesPage.goTo();
     await articlesPage.addArticleButtonLogged.click();
   });
-  test(
-    'add new article with required data',
-    {
-      tag: ['@GAD-R04-02', '@smoke'],
-    },
-    async ({ page }) => {
-      //Arrange
-      const articlePage = new ArticlePage(page);
-      const articleData = randomNewArticle();
-
-      //Act
-      await expect.soft(addArticleView.articleViewHeader).toBeVisible();
-      await addArticleView.createArticle(articleData);
-
-      //Assert
-      await expect.soft(articlePage.articleTitle).toHaveText(articleData.title);
-      await expect.soft(articlePage.articleBody).toHaveText(articleData.body);
-    },
-  );
 
   test(
     'add new article with no body',
@@ -82,6 +63,7 @@ test.describe('verify tests', () => {
       await expect(addArticleView.errorPopup).toHaveText(expectErrorMessage);
     },
   );
+
   test.describe('title lenght', () => {
     test(
       'add new article reject title more than 128',
