@@ -1,4 +1,4 @@
-import { LoginUser } from '../../src/models/user.model';
+import { LoginUserModel } from '../../src/models/user.model';
 import { LoginPage } from '../../src/pages/login.page';
 import { WelcomePage } from '../../src/pages/welcome.page';
 import { testUser1 } from '../../src/test-data/user-date';
@@ -28,7 +28,7 @@ test.describe('login tests', () => {
       tag: ['@GAD-R01-02', '@smoke'],
     },
     async ({ page }) => {
-      const loginUserData: LoginUser = {
+      const loginUserData: LoginUserModel = {
         userEmail: testUser1.userEmail,
         userPassword: 'wrong_pass',
       };
