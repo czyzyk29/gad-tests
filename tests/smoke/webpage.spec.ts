@@ -11,11 +11,12 @@ test.describe('Verify main pages', () => {
     },
     async ({ page }) => {
       const homePage = new HomePage(page);
+      const expectHomePageTitle = 'GAD';
 
       await homePage.goTo();
 
-      const title = await homePage.title();
-      expect(title).toContain('GAD');
+      const title = await homePage.getTitle();
+      expect(title).toContain(expectHomePageTitle);
     },
   );
 
@@ -26,11 +27,12 @@ test.describe('Verify main pages', () => {
     },
     async ({ page }) => {
       const articles = new ArticlesPage(page);
+      const expectArticlesPageTitle = 'Articles';
 
       await articles.goTo();
 
-      const title = await articles.title();
-      expect(title).toContain('Articles');
+      const title = await articles.getTitle();
+      expect(title).toContain(expectArticlesPageTitle);
     },
   );
 
@@ -41,11 +43,12 @@ test.describe('Verify main pages', () => {
     },
     async ({ page }) => {
       const comments = new CommentsPage(page);
+      const expectCommentsPageTitle = 'Comments';
 
       await comments.goTo();
 
-      const title = await comments.title();
-      expect(title).toContain('Comments');
+      const title = await comments.getTitle();
+      expect(title).toContain(expectCommentsPageTitle);
     },
   );
 });

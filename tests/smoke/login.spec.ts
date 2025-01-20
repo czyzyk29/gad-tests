@@ -12,12 +12,13 @@ test.describe('login tests', () => {
     },
     async ({ page }) => {
       const loginPage = new LoginPage(page);
+      const welcomePage = new WelcomePage(page);
+
       await loginPage.goTo();
 
       await loginPage.login(testUser1);
 
-      const welcomePage = new WelcomePage(page);
-      const title = await welcomePage.title();
+      const title = await welcomePage.getTitle();
 
       expect(title).toContain('Welcome');
     },
@@ -33,17 +34,20 @@ test.describe('login tests', () => {
         userPassword: 'wrong_pass',
       };
 
+      const expectLoginPasswordError = 'Invalid username or password';
+      const expectTitleLogin = 'Login';
       const loginPage = new LoginPage(page);
+
       await loginPage.goTo();
 
       await loginPage.login(loginUserData);
 
       await expect
         .soft(loginPage.loginPasswordError)
-        .toHaveText('Invalid username or password');
+        .toHaveText(expectLoginPasswordError);
 
-      const title = await loginPage.title();
-      expect.soft(title).toContain('Login');
+      const title = await loginPage.getTitle();
+      expect.soft(title).toContain(expectTitleLogin);
     },
   );
 });

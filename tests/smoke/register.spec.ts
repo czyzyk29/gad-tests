@@ -23,6 +23,8 @@ test.describe('register tests', () => {
       const expectSuccessPopup = 'User created';
       const loginPage = new LoginPage(page);
       const welcomePage = new WelcomePage(page);
+      const expectLoginTitle = 'Login';
+      const expectTitle = 'Welcome';
 
       //Act
       await registerPage.goTo();
@@ -31,15 +33,15 @@ test.describe('register tests', () => {
       await expect(registerPage.successPopup).toHaveText(expectSuccessPopup);
 
       await loginPage.waitForPageLoginUrl();
-      const titleLogin = await loginPage.title();
-      expect.soft(titleLogin).toContain('Login');
+      const titleLogin = await loginPage.getTitle();
+      expect.soft(titleLogin).toContain(expectLoginTitle);
 
       await loginPage.login(registerUserData);
 
-      const titleWelcome = await welcomePage.title();
+      const titleWelcome = await welcomePage.getTitle();
 
       //Assert
-      expect(titleWelcome).toContain('Welcome');
+      expect(titleWelcome).toContain(expectTitle);
     },
   );
   test(

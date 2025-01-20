@@ -1,4 +1,4 @@
-import { randomNewArticle } from '../src/factory/article.factory';
+import { prepareRandomArticle } from '../src/factory/article.factory';
 import { ArticlePage } from '../src/pages/article.page';
 import { ArticlesPage } from '../src/pages/articles.page';
 import { LoginPage } from '../src/pages/login.page';
@@ -30,7 +30,7 @@ test.describe('verify tests', () => {
     async () => {
       //Arrange
       const expectErrorMessage = 'Article was not created';
-      const articleData = randomNewArticle();
+      const articleData = prepareRandomArticle();
       articleData.body = '';
 
       await expect.soft(addArticleView.articleViewHeader).toBeVisible();
@@ -51,7 +51,7 @@ test.describe('verify tests', () => {
     async () => {
       //Arrange
       const expectErrorMessage = 'Article was not created';
-      const articleData = randomNewArticle();
+      const articleData = prepareRandomArticle();
       articleData.title = '';
 
       await expect.soft(addArticleView.articleViewHeader).toBeVisible();
@@ -73,7 +73,7 @@ test.describe('verify tests', () => {
       async () => {
         //Arrange
         const expectErrorMessage = 'Article was not created';
-        const articleData = randomNewArticle(129);
+        const articleData = prepareRandomArticle(129);
 
         await expect.soft(addArticleView.articleViewHeader).toBeVisible();
 
@@ -93,7 +93,7 @@ test.describe('verify tests', () => {
       async ({ page }) => {
         //Arrange
         const articlePage = new ArticlePage(page);
-        const articleData = randomNewArticle(128);
+        const articleData = prepareRandomArticle(128);
 
         await expect.soft(addArticleView.articleViewHeader).toBeVisible();
 
