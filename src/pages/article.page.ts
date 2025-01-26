@@ -8,6 +8,9 @@ export class ArticlePage extends BasePage {
   articleBody = this.page.getByTestId('article-body');
   deleteIcon = this.page.getByTestId('delete');
   mainMenu = new MainMenuComponent(this.page);
+  addCommentButton = this.page.locator('#add-new');
+  errorPopup = this.page.getByTestId('alert-popup');
+
   constructor(page: Page) {
     super(page);
   }
