@@ -2,6 +2,7 @@ import { prepareRandomArticle } from '../../src/factory/article.factory';
 import { AddArticleModel } from '../../src/models/article.model';
 import { ArticlePage } from '../../src/pages/article.page';
 import { ArticlesPage } from '../../src/pages/articles.page';
+import { CommentPage } from '../../src/pages/comment.page';
 import { LoginPage } from '../../src/pages/login.page';
 import { testUser1 } from '../../src/test-data/user-date';
 import { AddArticleView } from '../../src/views/add-article.view';
@@ -15,6 +16,7 @@ test.describe('create, verify and delete comment', () => {
   let articlePage: ArticlePage;
   let addArticleView: AddArticleView;
   let addCommentView: AddCommentView;
+  let commentPage: CommentPage;
 
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
@@ -22,6 +24,7 @@ test.describe('create, verify and delete comment', () => {
     articlePage = new ArticlePage(page);
     addArticleView = new AddArticleView(page);
     addCommentView = new AddCommentView(page);
+    commentPage = new CommentPage(page);
     articleData = prepareRandomArticle();
 
     await loginPage.goTo();
@@ -35,7 +38,7 @@ test.describe('create, verify and delete comment', () => {
     {
       tag: ['@GAD-R06-02', '@smoke'],
     },
-    async ({ page }) => {
+    async () => {
       //Arrange
       const expectedCommentPopupSuccess = 'Comment was created';
       const commentText = 'comment test';
@@ -52,14 +55,11 @@ test.describe('create, verify and delete comment', () => {
         .toHaveText(expectedCommentPopupSuccess);
 
       //verify comment
+      const articleComment = articlePage.getArticleComment(commentText);
+      await expect(articleComment.body).toHaveText(commentText);
+      await articleComment.link.click();
 
-      const commentContainer = page
-        .locator('.comment-container')
-        .filter({ hasText: commentText });
-
-      await expect(
-        commentContainer.locator(':text("comment:") + span '),
-      ).toHaveText(commentText);
+      await expect(commentPage.commentBody).toHaveText(commentText);
     },
   );
 });
