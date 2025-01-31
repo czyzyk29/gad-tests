@@ -50,7 +50,7 @@ test.describe('register tests', () => {
       tag: ['@GAD-R03-04', '@smoke'],
     },
     async () => {
-      //Arrang
+      //Arrange
       const expectedErrorEmail = 'Please provide a valid email address';
       registerUserData.userEmail = 'XXXX';
 

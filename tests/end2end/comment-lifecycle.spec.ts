@@ -4,15 +4,12 @@ import { AddArticleModel } from '../../src/models/article.model';
 import { ArticlePage } from '../../src/pages/article.page';
 import { ArticlesPage } from '../../src/pages/articles.page';
 import { CommentPage } from '../../src/pages/comment.page';
-import { LoginPage } from '../../src/pages/login.page';
-import { testUser1 } from '../../src/test-data/user-date';
 import { AddArticleView } from '../../src/views/add-article.view';
 import { AddCommentView } from '../../src/views/add-comment.view';
 import { EditCommentView } from '../../src/views/edit-comment.view';
 import { expect, test } from '@playwright/test';
 
 test.describe('create, verify and delete comment', () => {
-  let loginPage: LoginPage;
   let articlesPage: ArticlesPage;
   let articleData: AddArticleModel;
   let articlePage: ArticlePage;
@@ -22,7 +19,6 @@ test.describe('create, verify and delete comment', () => {
   let editCommentView: EditCommentView;
 
   test.beforeEach(async ({ page }) => {
-    loginPage = new LoginPage(page);
     articlesPage = new ArticlesPage(page);
     articlePage = new ArticlePage(page);
     addArticleView = new AddArticleView(page);
@@ -31,14 +27,12 @@ test.describe('create, verify and delete comment', () => {
     editCommentView = new EditCommentView(page);
     articleData = prepareRandomArticle();
 
-    await loginPage.goTo();
-    await loginPage.login(testUser1);
     await articlesPage.goTo();
     await articlesPage.addArticleButtonLogged.click();
     await addArticleView.createArticle(articleData);
   });
   test(
-    'Operation on comments',
+    'Operation on comments @logged',
     {
       tag: ['@GAD-R06-02', '@smoke'],
     },
@@ -99,7 +93,7 @@ test.describe('create, verify and delete comment', () => {
     },
   );
   test(
-    'Add can ad more than one comment on comments to article',
+    'Add can ad more than one comment on comments to article @logged',
     {
       tag: ['@GAD-R06-02', '@smoke'],
     },
