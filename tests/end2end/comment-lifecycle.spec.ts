@@ -96,22 +96,44 @@ test.describe('create, verify and delete comment', () => {
           editCommentData.body,
         );
       });
+    },
+  );
+  test(
+    'Add can ad more than one comment on comments to article',
+    {
+      tag: ['@GAD-R06-02', '@smoke'],
+    },
+    async () => {
+      const newCommentData = prepareRandomComment();
+
+      await test.step('create first comment', async () => {
+        //Act
+        await articlePage.addCommentButton.click();
+        await addCommentView.addComment(newCommentData);
+
+        //Assert
+      });
 
       await test.step('create and verify second comment', async () => {
         // Arrange
-        const secondCommentData = prepareRandomComment();
-        // Act
-        await articlePage.addCommentButton.click();
-        await addCommentView.addComment(secondCommentData);
-        // Assert
-        const articleComment = articlePage.getArticleComment(
-          secondCommentData.body,
-        );
-        await expect(articleComment.body).toHaveText(secondCommentData.body);
-        await articleComment.link.click();
-        await expect(commentPage.commentBody).toHaveText(
-          secondCommentData.body,
-        );
+        const secondCommentBody =
+          await test.step('create second comment', async () => {
+            //Arrange
+            const secondCommentData = prepareRandomComment();
+
+            // Act
+            await articlePage.addCommentButton.click();
+            await addCommentView.addComment(secondCommentData);
+            return secondCommentData.body;
+          });
+        await test.step('verify second comment', async () => {
+          // Assert
+          const articleComment =
+            articlePage.getArticleComment(secondCommentBody);
+          await expect(articleComment.body).toHaveText(secondCommentBody);
+          await articleComment.link.click();
+          await expect(commentPage.commentBody).toHaveText(secondCommentBody);
+        });
       });
     },
   );
