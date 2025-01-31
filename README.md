@@ -21,6 +21,7 @@ Follow instructions in app README
 - setup Playwright with: `npx playwright install --with-deps chromium`
 - setup husky with: `npx husky`
 - env file to prepare: `cp .env-template .env`
+- add credentials to copied file `.env` - example from db tools in gad
 
 ## Use
 
