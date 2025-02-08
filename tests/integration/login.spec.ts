@@ -1,6 +1,5 @@
 import { LoginUserModel } from '@_src/models/user.model';
 import { LoginPage } from '@_src/pages/login.page';
-import { WelcomePage } from '@_src/pages/welcome.page';
 import { testUser1 } from '@_src/test-data/user-date';
 import { expect, test } from '@playwright/test';
 
