@@ -10,13 +10,15 @@ test.describe('Verify main menu buttons', () => {
       tag: ['@GAD-R01-03', '@smoke'],
     },
     async ({ page }) => {
+      //Arrange
       const articlesPage = new ArticlesPage(page);
-      const commentsPage = new CommentsPage(page);
 
+      //Act
       await articlesPage.goTo();
-      await articlesPage.mainMenu.commentsButton.click();
+      const commentsPage = await articlesPage.mainMenu.clickCommentButton();
       const title = await commentsPage.getTitle();
 
+      //Assert
       expect(title).toContain('Comments');
     },
   );
