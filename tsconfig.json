@@ -6,6 +6,7 @@
     "baseUrl": ".",
     "paths": {
       "@_src/*": ["src/*"],
+      "@_config/*": ["config/*"],
       "@_pw-config": ["playwright.config.ts"]
     }
   }
