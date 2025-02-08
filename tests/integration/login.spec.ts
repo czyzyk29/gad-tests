@@ -12,11 +12,10 @@ test.describe('login tests', () => {
     },
     async ({ page }) => {
       const loginPage = new LoginPage(page);
-      const welcomePage = new WelcomePage(page);
 
       await loginPage.goTo();
 
-      await loginPage.login(testUser1);
+      const welcomePage = await loginPage.login(testUser1);
 
       const title = await welcomePage.getTitle();
 

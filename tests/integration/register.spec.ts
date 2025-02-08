@@ -2,7 +2,6 @@ import { randomUserData } from '@_src/factory/user.factory';
 import { RegisterUserModel } from '@_src/models/user.model';
 import { LoginPage } from '@_src/pages/login.page';
 import { RegisterPage } from '@_src/pages/register.page';
-import { WelcomePage } from '@_src/pages/welcome.page';
 import { expect, test } from '@playwright/test';
 
 test.describe('register tests', () => {
@@ -22,7 +21,6 @@ test.describe('register tests', () => {
       //Arrange
       const expectSuccessPopup = 'User created';
       const loginPage = new LoginPage(page);
-      const welcomePage = new WelcomePage(page);
       const expectLoginTitle = 'Login';
       const expectTitle = 'Welcome';
 
@@ -36,7 +34,7 @@ test.describe('register tests', () => {
       const titleLogin = await loginPage.getTitle();
       expect.soft(titleLogin).toContain(expectLoginTitle);
 
-      await loginPage.login(registerUserData);
+      const welcomePage = await loginPage.login(registerUserData);
 
       const titleWelcome = await welcomePage.getTitle();
 
