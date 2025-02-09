@@ -2,7 +2,6 @@ import { prepareRandomArticle } from '@_src/factory/article.factory';
 import { AddArticleModel } from '@_src/models/article.model';
 import { ArticlePage } from '@_src/pages/article.page';
 import { ArticlesPage } from '@_src/pages/articles.page';
-import { AddArticleView } from '@_src/views/add-article.view';
 import { expect, test } from '@playwright/test';
 
 test.describe.configure({ mode: 'serial' });
@@ -22,13 +21,12 @@ test.describe('create, verify and delete article', () => {
     {
       tag: ['@GAD-R04-02', '@smoke'],
     },
-    async ({ page }) => {
+    async () => {
       //Arrange
-      const addArticleView = new AddArticleView(page);
       articleData = prepareRandomArticle();
 
       //Act
-      await articlesPage.addArticleButtonLogged.click();
+      const addArticleView = await articlesPage.clickAddArticleButtonLogged();
       await expect.soft(addArticleView.articleViewHeader).toBeVisible();
       await addArticleView.createArticle(articleData);
 
@@ -45,7 +43,7 @@ test.describe('create, verify and delete article', () => {
     },
     async () => {
       //Act
-      await articlesPage.goToArticles(articleData.title);
+      const articlePage = await articlesPage.goToArticles(articleData.title);
 
       //Assert
       await expect.soft(articlePage.articleTitle).toHaveText(articleData.title);
@@ -62,7 +60,7 @@ test.describe('create, verify and delete article', () => {
       //Arrange
       const noResultsTxt = 'No data';
       const expectedTitleArticles = 'Articles';
-      await articlesPage.goToArticles(articleData.title);
+      const articlePage = await articlesPage.goToArticles(articleData.title);
 
       //Act
       articlesPage = await articlePage.deleteArticle();
@@ -72,7 +70,7 @@ test.describe('create, verify and delete article', () => {
       const title = await articlesPage.getTitle();
       expect(title).toContain(expectedTitleArticles);
 
-      await articlesPage.searchArticle(articleData.title);
+      articlesPage = await articlesPage.searchArticle(articleData.title);
       await expect(articlesPage.noResults).toHaveText(noResultsTxt);
     },
   );

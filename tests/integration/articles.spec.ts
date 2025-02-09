@@ -10,7 +10,6 @@ test.describe('verify tests', () => {
 
   test.beforeEach(async ({ page }) => {
     articlesPage = new ArticlesPage(page);
-    addArticleView = new AddArticleView(page);
 
     // await loginPage.goTo();
     // await loginPage.login(testUser1);
@@ -19,7 +18,7 @@ test.describe('verify tests', () => {
     // await page.context().addCookies(sessionData.cookies);
     // await page.context().storageState(sessionData.localStorage);
     await articlesPage.goTo();
-    await articlesPage.addArticleButtonLogged.click();
+    addArticleView = await articlesPage.clickAddArticleButtonLogged();
   });
 
   test(
