@@ -36,7 +36,7 @@ test.describe('create, verify and delete comment', () => {
 
         await expect.soft(addCommentView.addCommentViewHeader).toBeVisible();
 
-        await addCommentView.addComment(newCommentData);
+        articlePage = await addCommentView.addComment(newCommentData);
 
         //Assert
         await expect
@@ -44,7 +44,7 @@ test.describe('create, verify and delete comment', () => {
           .toHaveText(expectedCommentAddPopupSuccess);
       });
 
-      const commentPage = await test.step('verify comment', async () => {
+      let commentPage = await test.step('verify comment', async () => {
         //Arrange
         const articleComment = articlePage.getArticleComment(
           newCommentData.body,
@@ -69,7 +69,7 @@ test.describe('create, verify and delete comment', () => {
         //Act
         // await commentPage.editButton.click();
         const editCommentView = await commentPage.clickEditButton();
-        await editCommentView.updateComment(editCommentData);
+        commentPage = await editCommentView.updateComment(editCommentData);
         //Assert
         await expect(commentPage.commentBody).toHaveText(editCommentData.body);
         await expect(commentPage.errorPopup).toHaveText(
@@ -99,7 +99,7 @@ test.describe('create, verify and delete comment', () => {
       await test.step('create first comment', async () => {
         //Act
         const addCommentView = await articlePage.clickAddCommentButton();
-        await addCommentView.addComment(newCommentData);
+        articlePage = await addCommentView.addComment(newCommentData);
 
         //Assert
       });
@@ -113,7 +113,7 @@ test.describe('create, verify and delete comment', () => {
 
             // Act
             const addCommentView = await articlePage.clickAddCommentButton();
-            await addCommentView.addComment(secondCommentData);
+            articlePage = await addCommentView.addComment(secondCommentData);
             return secondCommentData.body;
           });
         await test.step('verify second comment', async () => {
