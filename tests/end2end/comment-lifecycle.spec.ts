@@ -14,12 +14,11 @@ test.describe('create, verify and delete comment', () => {
 
   test.beforeEach(async ({ page }) => {
     articlesPage = new ArticlesPage(page);
-    articlePage = new ArticlePage(page);
     articleData = prepareRandomArticle();
 
     await articlesPage.goTo();
     addArticleView = await articlesPage.clickAddArticleButtonLogged();
-    await addArticleView.createArticle(articleData);
+    articlePage = await addArticleView.createArticle(articleData);
   });
   test(
     'Operation on comments @logged',

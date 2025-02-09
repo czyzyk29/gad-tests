@@ -1,5 +1,4 @@
 import { prepareRandomArticle } from '@_src/factory/article.factory';
-import { ArticlePage } from '@_src/pages/article.page';
 import { ArticlesPage } from '@_src/pages/articles.page';
 import { AddArticleView } from '@_src/views/add-article.view';
 import { expect, test } from '@playwright/test';
@@ -89,15 +88,14 @@ test.describe('verify tests', () => {
       {
         tag: ['@GAD-R04-02', '@smoke'],
       },
-      async ({ page }) => {
+      async () => {
         //Arrange
-        const articlePage = new ArticlePage(page);
         const articleData = prepareRandomArticle(128);
 
         await expect.soft(addArticleView.articleViewHeader).toBeVisible();
 
         //Act
-        await addArticleView.createArticle(articleData);
+        const articlePage = await addArticleView.createArticle(articleData);
 
         //Assert
         await expect
