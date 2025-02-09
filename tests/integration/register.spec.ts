@@ -1,6 +1,5 @@
 import { randomUserData } from '@_src/factory/user.factory';
 import { RegisterUserModel } from '@_src/models/user.model';
-import { LoginPage } from '@_src/pages/login.page';
 import { RegisterPage } from '@_src/pages/register.page';
 import { expect, test } from '@playwright/test';
 
@@ -17,16 +16,15 @@ test.describe('register tests', () => {
     {
       tag: ['@GAD-R03-01', '@GAD-R03-02', '@GAD-R03-03', '@smoke'],
     },
-    async ({ page }) => {
+    async () => {
       //Arrange
       const expectSuccessPopup = 'User created';
-      const loginPage = new LoginPage(page);
       const expectLoginTitle = 'Login';
       const expectTitle = 'Welcome';
 
       //Act
       await registerPage.goTo();
-      await registerPage.register(registerUserData);
+      const loginPage = await registerPage.register(registerUserData);
 
       await expect(registerPage.successPopup).toHaveText(expectSuccessPopup);
 
