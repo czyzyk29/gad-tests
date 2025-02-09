@@ -3,9 +3,7 @@ import { prepareRandomComment } from '@_src/factory/comment.factory';
 import { AddArticleModel } from '@_src/models/article.model';
 import { ArticlePage } from '@_src/pages/article.page';
 import { ArticlesPage } from '@_src/pages/articles.page';
-import { CommentPage } from '@_src/pages/comment.page';
 import { AddArticleView } from '@_src/views/add-article.view';
-import { AddCommentView } from '@_src/views/add-comment.view';
 import { EditCommentView } from '@_src/views/edit-comment.view';
 import { expect, test } from '@playwright/test';
 
@@ -14,16 +12,12 @@ test.describe('create, verify and delete comment', () => {
   let articleData: AddArticleModel;
   let articlePage: ArticlePage;
   let addArticleView: AddArticleView;
-  let addCommentView: AddCommentView;
-  let commentPage: CommentPage;
   let editCommentView: EditCommentView;
 
   test.beforeEach(async ({ page }) => {
     articlesPage = new ArticlesPage(page);
     articlePage = new ArticlePage(page);
     addArticleView = new AddArticleView(page);
-    addCommentView = new AddCommentView(page);
-    commentPage = new CommentPage(page);
     editCommentView = new EditCommentView(page);
     articleData = prepareRandomArticle();
 
@@ -43,7 +37,8 @@ test.describe('create, verify and delete comment', () => {
 
       await test.step('create comment', async () => {
         //Act
-        await articlePage.addCommentButton.click();
+        const addCommentView = await articlePage.clickAddCommentButton();
+
         await expect.soft(addCommentView.addCommentViewHeader).toBeVisible();
 
         await addCommentView.addComment(newCommentData);
@@ -54,16 +49,21 @@ test.describe('create, verify and delete comment', () => {
           .toHaveText(expectedCommentAddPopupSuccess);
       });
 
-      await test.step('verify comment', async () => {
+      const commentPage = await test.step('verify comment', async () => {
         //Arrange
         const articleComment = articlePage.getArticleComment(
           newCommentData.body,
         );
         //Act
         await expect(articleComment.body).toHaveText(newCommentData.body);
-        await articleComment.link.click();
+
+        const commentPage = await articlePage.clickCommentLink(
+          articleComment.link,
+        );
         //Assert
         await expect(commentPage.commentBody).toHaveText(newCommentData.body);
+
+        return commentPage;
       });
 
       await test.step('edit comment', async () => {
@@ -102,7 +102,7 @@ test.describe('create, verify and delete comment', () => {
 
       await test.step('create first comment', async () => {
         //Act
-        await articlePage.addCommentButton.click();
+        const addCommentView = await articlePage.clickAddCommentButton();
         await addCommentView.addComment(newCommentData);
 
         //Assert
@@ -116,7 +116,7 @@ test.describe('create, verify and delete comment', () => {
             const secondCommentData = prepareRandomComment();
 
             // Act
-            await articlePage.addCommentButton.click();
+            const addCommentView = await articlePage.clickAddCommentButton();
             await addCommentView.addComment(secondCommentData);
             return secondCommentData.body;
           });
@@ -125,7 +125,10 @@ test.describe('create, verify and delete comment', () => {
           const articleComment =
             articlePage.getArticleComment(secondCommentBody);
           await expect(articleComment.body).toHaveText(secondCommentBody);
-          await articleComment.link.click();
+
+          const commentPage = await articlePage.clickCommentLink(
+            articleComment.link,
+          );
           await expect(commentPage.commentBody).toHaveText(secondCommentBody);
         });
       });
