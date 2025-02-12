@@ -2,11 +2,21 @@ import { ArticlesPage } from '@_src/pages/articles.page';
 import { CommentsPage } from '@_src/pages/comments.page';
 import { test as baseTest, expect } from '@playwright/test';
 
-const test = baseTest.extend<{ articlesPage: ArticlesPage }>({
+interface Pages {
+  articlesPage: ArticlesPage;
+  commentsPage: CommentsPage;
+}
+
+const test = baseTest.extend<Pages>({
   articlesPage: async ({ page }, use) => {
     const articlesPage = new ArticlesPage(page);
     await articlesPage.goTo();
     await use(articlesPage);
+  },
+  commentsPage: async ({ page }, use) => {
+    const commentsPage = new CommentsPage(page);
+    await commentsPage.goTo();
+    await use(commentsPage);
   },
 });
 
@@ -35,12 +45,12 @@ test.describe('Verify main menu buttons', () => {
     {
       tag: ['@GAD-R01-03', '@smoke'],
     },
-    async ({ page }) => {
+    async ({ commentsPage }) => {
       //Arrange
-      const commentsPage = new CommentsPage(page);
+      //const commentsPage = new CommentsPage(page); //in fixtures
 
       //Act
-      await commentsPage.goTo();
+      //await commentsPage.goTo(); //in fixtures
       const articlesPage = await commentsPage.mainMenu.clickArticlesButton();
 
       //Assert
@@ -54,12 +64,12 @@ test.describe('Verify main menu buttons', () => {
     {
       tag: ['@GAD-R01-03', '@smoke'],
     },
-    async ({ page }) => {
+    async ({ articlesPage }) => {
       //Arrange
-      const articlesPage = new ArticlesPage(page);
+      //const articlesPage = new ArticlesPage(page); //in fixtures
 
       //Act
-      await articlesPage.goTo();
+      //await articlesPage.goTo(); //in fixtures
       const homePage = await articlesPage.mainMenu.clickMainMenuLink();
 
       //Assert
