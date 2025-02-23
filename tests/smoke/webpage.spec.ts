@@ -1,7 +1,4 @@
-import { ArticlesPage } from '@_src/pages/articles.page';
-import { CommentsPage } from '@_src/pages/comments.page';
-import { HomePage } from '@_src/pages/home.page';
-import { expect, test } from '@playwright/test';
+import { expect, test } from '@_src/fixtures/merge-fixtures';
 
 test.describe('Verify main pages', () => {
   test(
@@ -9,11 +6,8 @@ test.describe('Verify main pages', () => {
     {
       tag: ['@GAD-R01-01', '@smoke'],
     },
-    async ({ page }) => {
-      const homePage = new HomePage(page);
+    async ({ homePage }) => {
       const expectHomePageTitle = 'GAD';
-
-      await homePage.goTo();
 
       const title = await homePage.getTitle();
       expect(title).toContain(expectHomePageTitle);
@@ -25,13 +19,10 @@ test.describe('Verify main pages', () => {
     {
       tag: ['@GAD-R01-02', '@smoke'],
     },
-    async ({ page }) => {
-      const articles = new ArticlesPage(page);
+    async ({ articlesPage }) => {
       const expectArticlesPageTitle = 'Articles';
 
-      await articles.goTo();
-
-      const title = await articles.getTitle();
+      const title = await articlesPage.getTitle();
       expect(title).toContain(expectArticlesPageTitle);
     },
   );
@@ -41,13 +32,10 @@ test.describe('Verify main pages', () => {
     {
       tag: ['@GAD-R01-03', '@smoke'],
     },
-    async ({ page }) => {
-      const comments = new CommentsPage(page);
+    async ({ commentsPage }) => {
       const expectCommentsPageTitle = 'Comments';
 
-      await comments.goTo();
-
-      const title = await comments.getTitle();
+      const title = await commentsPage.getTitle();
       expect(title).toContain(expectCommentsPageTitle);
     },
   );
