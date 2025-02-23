@@ -1,3 +1,4 @@
+import { RESPONSE_TIMEOUT } from '@_pw-config';
 import { prepareRandomArticle } from '@_src/factory/article.factory';
 import { ArticlesPage } from '@_src/pages/articles.page';
 import { AddArticleView } from '@_src/views/add-article.view';
@@ -25,17 +26,28 @@ test.describe('verify tests', () => {
     {
       tag: ['@GAD-R04-02', '@smoke'],
     },
-    async () => {
+    async ({ page }) => {
       //Arrange
       const expectErrorMessage = 'Article was not created';
       const articleData = prepareRandomArticle();
+      const expectResponseCode = 422;
       articleData.body = '';
 
       await expect.soft(addArticleView.articleViewHeader).toBeVisible();
 
+      const responsePromise = page.waitForResponse('/api/articles', {
+        timeout: RESPONSE_TIMEOUT,
+      });
+
+      //const body = await response.json();
+
+      //expect(body).toHaveLength(expectDefArticleNumber);
+
       //Act
       await addArticleView.createArticle(articleData);
+      const response = await responsePromise;
 
+      expect(response.status()).toBe(expectResponseCode);
       //Assert
       await expect(addArticleView.errorPopup).toHaveText(expectErrorMessage);
     },
