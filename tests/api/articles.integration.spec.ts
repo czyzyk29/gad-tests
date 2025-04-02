@@ -45,30 +45,34 @@ test.describe('Verify articles CRUD operations @api', () => {
       data: userData,
     });
 
-    expect(responseLogin.body()).toBeGreaterThan(1);
-
-    const loginJson = await responseLogin.json();
-
-    await expect(loginJson.headers()).toHaveAttribute('Authorization');
+    const responseLoginJson = await responseLogin.json();
 
     const headers = {
-      Authorization:
-        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Ik1vc2VzLkFybXN0cm9uZ0BGZWVzdC5jYSIsImRhdGEiOiJUQkQiLCJpYXQiOjE3NDM1MTYwNDcsImV4cCI6MTc0MzUxOTY0N30.3HFOCbawvbTpaactUgSxfGLx7S9NuCfDy7Vf6CCfAJ0',
+      Authorization: `Bearer ${responseLoginJson.access_token}`,
     };
 
     const randomArticle = prepareRandomArticle();
     const articleData = {
       title: randomArticle.title,
       body: randomArticle.body,
-      date: '2025-04-01T13:45:44.091Z',
-      image: 'string',
+      date: '2025-04-02T10:45:44.091Z',
+      image: '.\\data\\images\\256\\subtle-cinematics-BulYN_Vs_dw-unsplash.jpg',
     };
 
-    const response = await request.post(articlesUrl, {
+    const responseArticle = await request.post(articlesUrl, {
       headers: headers,
       data: articleData,
     });
 
-    expect(response.status()).toBe(expectedResponseCode);
+    const actualResponseStatus = responseArticle.status();
+    expect(
+      actualResponseStatus,
+      `status code expected ${expectedResponseCode} but recived ${actualResponseStatus}`,
+    ).toBe(expectedResponseCode);
+
+    const article = await responseArticle.json();
+
+    expect.soft(article.title).toEqual(articleData.title);
+    expect.soft(article.body).toEqual(articleData.body);
   });
 });
