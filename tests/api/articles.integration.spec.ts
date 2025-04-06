@@ -1,9 +1,12 @@
 import { expect, test } from '@_src/fixtures/merge-fixtures';
 import {
+  ArticlePayload,
+  Headers,
   apiLinks,
   generateArticlePayload,
   getAuthorizationHeader,
 } from '@_src/utils/api.util';
+import { APIResponse } from '@playwright/test';
 
 test.describe('Verify articles CRUD operations @crud', () => {
   test('should not create an article without a logged-in user', async ({
@@ -21,32 +24,95 @@ test.describe('Verify articles CRUD operations @crud', () => {
     expect(response.status()).toBe(expectedResponseCode);
   });
 
-  test('should not create an article with a logged-in user @smoke', async ({
-    request,
-  }) => {
-    // Arrange
-    const expectedResponseCode = 201;
+  test.describe('Verify articles CRUD operations @crud', () => {
+    let responseArticle: APIResponse;
+    let headers: Headers;
+    let articleData: ArticlePayload;
 
-    //login
-
-    const headers = await getAuthorizationHeader(request);
-
-    const articleData = generateArticlePayload();
-
-    const responseArticle = await request.post(apiLinks.articlesUrl, {
-      headers,
-      data: articleData,
+    test.beforeAll('should login', async ({ request }) => {
+      headers = await getAuthorizationHeader(request);
     });
 
-    const actualResponseStatus = responseArticle.status();
-    expect(
-      actualResponseStatus,
-      `status code expected ${expectedResponseCode} but recived ${actualResponseStatus}`,
-    ).toBe(expectedResponseCode);
+    test.beforeEach(' create an article', async ({ request }) => {
+      // Arrange
 
-    const article = await responseArticle.json();
+      articleData = generateArticlePayload();
 
-    expect.soft(article.title).toEqual(articleData.title);
-    expect.soft(article.body).toEqual(articleData.body);
+      responseArticle = await request.post(apiLinks.articlesUrl, {
+        headers,
+        data: articleData,
+      });
+    });
+
+    test('should create an article with a logged-in user @smoke', async () => {
+      // Arrange
+      const expectedResponseCode = 201;
+
+      const actualResponseStatus = responseArticle.status();
+      expect(
+        actualResponseStatus,
+        `status code expected ${expectedResponseCode} but received ${actualResponseStatus}`,
+      ).toBe(expectedResponseCode);
+
+      const articleJson = await responseArticle.json();
+
+      expect.soft(articleJson.title).toEqual(articleData.title);
+      expect.soft(articleJson.body).toEqual(articleData.body);
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+    });
+
+    test.describe('Verify articles CRUD operations @crud', () => {
+      test('should delete an article with a logged-in user @smoke', async ({
+        request,
+      }) => {
+        // Arrange
+        const expectedResponseCode = 200;
+
+        const responseArticleJson = await responseArticle.json();
+        const articleId = responseArticleJson.id;
+
+        const responseArticleDelete = await request.delete(
+          `${apiLinks.articlesUrl}/${articleId}`,
+          {
+            headers,
+          },
+        );
+
+        const actualResponseStatus = responseArticleDelete.status();
+        expect(
+          actualResponseStatus,
+          `status code expected ${expectedResponseCode} but received ${actualResponseStatus}`,
+        ).toBe(expectedResponseCode);
+
+        const actualResponseGet = await request.get(
+          `${apiLinks.articlesUrl}/${articleId}`,
+        );
+        const expectedDeletedArticleStatusCode = 404;
+        expect(
+          actualResponseGet.status(),
+          `status code expected ${expectedDeletedArticleStatusCode} but received ${actualResponseGet.status()}`,
+        ).toBe(expectedDeletedArticleStatusCode);
+      });
+
+      test('should not delete an article with a no-logged-in user @smoke', async ({
+        request,
+      }) => {
+        // Arrange
+        const expectedResponseCode = 401;
+
+        //login
+        const responseArticleJson = await responseArticle.json();
+        const articleId = responseArticleJson.id;
+        const responseArticleDelete = await request.delete(
+          `${apiLinks.articlesUrl}/${articleId}`,
+        );
+
+        const actualResponseStatus = responseArticleDelete.status();
+        expect(
+          actualResponseStatus,
+          `status code expected ${expectedResponseCode} but received ${actualResponseStatus}`,
+        ).toBe(expectedResponseCode);
+      });
+    });
   });
 });

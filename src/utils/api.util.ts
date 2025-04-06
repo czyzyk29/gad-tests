@@ -3,14 +3,26 @@ import { prepareRandomComment } from '@_src/factory/comment.factory';
 import { testUser1 } from '@_src/test-data/user-date';
 import { APIRequestContext } from '@playwright/test';
 
+interface CommentPayload {
+  article_id: number;
+  body: string;
+  date: string;
+}
+export interface ArticlePayload {
+  title: string;
+  body: string;
+  date: string;
+  image: string;
+}
+export interface Headers {
+  [key: string]: string;
+}
+
 export const apiLinks = {
   articlesUrl: '/api/articles',
   commentsUrl: '/api/comments',
   loginUrl: '/api/login',
 };
-interface Headers {
-  [key: string]: string;
-}
 
 export async function getAuthorizationHeader(
   request: APIRequestContext,
@@ -32,13 +44,6 @@ export async function getAuthorizationHeader(
   return headers;
 }
 
-interface ArticlePayload {
-  title: string;
-  body: string;
-  date: string;
-  image: string;
-}
-
 export function generateArticlePayload(): ArticlePayload {
   const randomArticle = prepareRandomArticle();
   const articleData = {
@@ -49,12 +54,6 @@ export function generateArticlePayload(): ArticlePayload {
   };
 
   return articleData;
-}
-
-interface CommentPayload {
-  article_id: number;
-  body: string;
-  date: string;
 }
 
 export function generateCommentPayload(articleId: number): CommentPayload {
