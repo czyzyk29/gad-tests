@@ -1,7 +1,9 @@
-import { prepareRandomArticle } from '@_src/factory/article.factory';
 import { prepareRandomComment } from '@_src/factory/comment.factory';
 import { expect, test } from '@_src/fixtures/merge-fixtures';
-import { getAuthorizationHeader } from '@_src/utils/api.util';
+import {
+  generateArticlePayload,
+  getAuthorizationHeader,
+} from '@_src/utils/api.util';
 
 test.describe('Verify articles CRUD operations @crud', () => {
   let articleId: number;
@@ -12,15 +14,8 @@ test.describe('Verify articles CRUD operations @crud', () => {
     async ({ request }) => {
       headers = await getAuthorizationHeader(request);
 
-      //Article
-      const randomArticle = prepareRandomArticle();
-      const articleData = {
-        title: randomArticle.title,
-        body: randomArticle.body,
-        date: '2025-04-02T10:45:44.091Z',
-        image:
-          '.\\data\\images\\256\\subtle-cinematics-BulYN_Vs_dw-unsplash.jpg',
-      };
+      const articleData = generateArticlePayload();
+
       const articlesUrl = '/api/articles';
       const responseArticle = await request.post(articlesUrl, {
         headers,

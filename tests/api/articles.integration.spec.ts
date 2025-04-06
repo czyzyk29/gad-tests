@@ -1,6 +1,8 @@
-import { prepareRandomArticle } from '@_src/factory/article.factory';
 import { expect, test } from '@_src/fixtures/merge-fixtures';
-import { getAuthorizationHeader } from '@_src/utils/api.util';
+import {
+  generateArticlePayload,
+  getAuthorizationHeader,
+} from '@_src/utils/api.util';
 
 test.describe('Verify articles CRUD operations @crud', () => {
   test('should not create an article without a logged-in user', async ({
@@ -10,13 +12,7 @@ test.describe('Verify articles CRUD operations @crud', () => {
     const expectedResponseCode = 401;
     const articlesUrl = '/api/articles';
 
-    const randomArticle = prepareRandomArticle();
-    const articleData = {
-      title: randomArticle.title,
-      body: randomArticle.body,
-      date: '2025-04-01T13:45:44.091Z',
-      image: 'string',
-    };
+    const articleData = generateArticlePayload();
 
     const response = await request.post(articlesUrl, {
       data: articleData,
@@ -36,13 +32,7 @@ test.describe('Verify articles CRUD operations @crud', () => {
 
     const headers = await getAuthorizationHeader(request);
 
-    const randomArticle = prepareRandomArticle();
-    const articleData = {
-      title: randomArticle.title,
-      body: randomArticle.body,
-      date: '2025-04-02T10:45:44.091Z',
-      image: '.\\data\\images\\256\\subtle-cinematics-BulYN_Vs_dw-unsplash.jpg',
-    };
+    const articleData = generateArticlePayload();
 
     const responseArticle = await request.post(articlesUrl, {
       headers,
