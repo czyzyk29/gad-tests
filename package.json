@@ -8,7 +8,7 @@
     "lint": "npx eslint . --max-warnings=0",
     "test": "npx playwright test",
     "test:headed": "npm run test -- --headed",
-    "test:ui": "npm run test -- --ui",
+    "test:ui-mode": "npm run test -- --ui",
     "show-report": "npx playwright show-report",
     "test:tag": "npx playwright test --grep \"@GAD-R01-01|@GAD-R01-02\"",
     "test:smoke": "npx playwright test --grep \"@smoke\""

@@ -1,6 +1,6 @@
 import { expect, test } from '@_src/fixtures/merge-fixtures';
 
-test.describe('verify articles API endpoint', () => {
+test.describe('verify articles API endpoint @smoke', () => {
   test.describe('verify each condition in separate test API endpoint', () => {
     test('GET articles status code 200', async ({ request }) => {
       const expectedResponseCode = 200;

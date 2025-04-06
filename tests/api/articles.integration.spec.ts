@@ -1,8 +1,8 @@
 import { prepareRandomArticle } from '@_src/factory/article.factory';
 import { expect, test } from '@_src/fixtures/merge-fixtures';
-import { testUser1 } from '@_src/test-data/user-date';
+import { getAuthorizationHeader } from '@_src/utils/api.util';
 
-test.describe('Verify articles CRUD operations @api', () => {
+test.describe('Verify articles CRUD operations @crud', () => {
   test('should not create an article without a logged-in user', async ({
     request,
   }) => {
@@ -25,7 +25,7 @@ test.describe('Verify articles CRUD operations @api', () => {
     expect(response.status()).toBe(expectedResponseCode);
   });
 
-  test('should not create an article with a logged-in user', async ({
+  test('should not create an article with a logged-in user @smoke', async ({
     request,
   }) => {
     // Arrange
@@ -34,22 +34,7 @@ test.describe('Verify articles CRUD operations @api', () => {
 
     //login
 
-    const loginUrl = '/api/login';
-
-    const userData = {
-      email: testUser1.userEmail,
-      password: testUser1.userPassword,
-    };
-
-    const responseLogin = await request.post(loginUrl, {
-      data: userData,
-    });
-
-    const responseLoginJson = await responseLogin.json();
-
-    const headers = {
-      Authorization: `Bearer ${responseLoginJson.access_token}`,
-    };
+    const headers = await getAuthorizationHeader(request);
 
     const randomArticle = prepareRandomArticle();
     const articleData = {
@@ -60,7 +45,7 @@ test.describe('Verify articles CRUD operations @api', () => {
     };
 
     const responseArticle = await request.post(articlesUrl, {
-      headers: headers,
+      headers,
       data: articleData,
     });
 

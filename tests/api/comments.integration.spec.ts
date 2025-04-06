@@ -1,32 +1,16 @@
 import { prepareRandomArticle } from '@_src/factory/article.factory';
 import { prepareRandomComment } from '@_src/factory/comment.factory';
 import { expect, test } from '@_src/fixtures/merge-fixtures';
-import { testUser1 } from '@_src/test-data/user-date';
+import { getAuthorizationHeader } from '@_src/utils/api.util';
 
-test.describe('Verify articles CRUD operations @api', () => {
+test.describe('Verify articles CRUD operations @crud', () => {
   let articleId: number;
   let headers: { [key: string]: string };
 
   test.beforeAll(
     'should not create an commnets with a logged-in user',
     async ({ request }) => {
-      //login
-      const loginUrl = '/api/login';
-
-      const userData = {
-        email: testUser1.userEmail,
-        password: testUser1.userPassword,
-      };
-
-      const responseLogin = await request.post(loginUrl, {
-        data: userData,
-      });
-
-      const responseLoginJson = await responseLogin.json();
-
-      headers = {
-        Authorization: `Bearer ${responseLoginJson.access_token}`,
-      };
+      headers = await getAuthorizationHeader(request);
 
       //Article
       const randomArticle = prepareRandomArticle();
@@ -39,7 +23,7 @@ test.describe('Verify articles CRUD operations @api', () => {
       };
       const articlesUrl = '/api/articles';
       const responseArticle = await request.post(articlesUrl, {
-        headers: headers,
+        headers,
         data: articleData,
       });
 
