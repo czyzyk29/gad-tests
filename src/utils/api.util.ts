@@ -1,4 +1,5 @@
 import { prepareRandomArticle } from '@_src/factory/article.factory';
+import { prepareRandomComment } from '@_src/factory/comment.factory';
 import { testUser1 } from '@_src/test-data/user-date';
 import { APIRequestContext } from '@playwright/test';
 
@@ -45,4 +46,21 @@ export function generateArticlePayload(): ArticlePayload {
   };
 
   return articleData;
+}
+
+interface CommentPayload {
+  article_id: number;
+  body: string;
+  date: string;
+}
+
+export function generateCommentPayload(articleId: number): CommentPayload {
+  const randomComments = prepareRandomComment();
+  const commentsData = {
+    article_id: articleId,
+    body: randomComments.body,
+    date: '2025-04-02T10:45:44.091Z',
+  };
+
+  return commentsData;
 }
