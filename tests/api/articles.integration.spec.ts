@@ -33,7 +33,7 @@ test.describe('Verify articles CRUD operations @crud', () => {
       headers = await getAuthorizationHeader(request);
     });
 
-    test.beforeEach(' create an article', async ({ request }) => {
+    test.beforeEach('create an article', async ({ request }) => {
       // Arrange
 
       articleData = generateArticlePayload();
@@ -42,6 +42,22 @@ test.describe('Verify articles CRUD operations @crud', () => {
         headers,
         data: articleData,
       });
+      const articleJson = await responseArticle.json();
+
+      await expect(async () => {
+        const articleId = articleJson.id;
+        const responseArticleCreated = await request.get(
+          `${apiLinks.articlesUrl}/${articleId}`,
+          {
+            headers,
+          },
+        );
+
+        expect(
+          responseArticleCreated.status(),
+          `Expect to 200 to be ${responseArticleCreated.status()}`,
+        ).toBe(200);
+      }).toPass({ timeout: 2_000 });
     });
 
     test('should create an article with a logged-in user @smoke', async () => {
@@ -58,7 +74,6 @@ test.describe('Verify articles CRUD operations @crud', () => {
 
       expect.soft(articleJson.title).toEqual(articleData.title);
       expect.soft(articleJson.body).toEqual(articleData.body);
-      await new Promise((resolve) => setTimeout(resolve, 5000));
     });
 
     test.describe('Verify articles CRUD operations @crud', () => {
