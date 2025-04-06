@@ -27,9 +27,21 @@ test.describe('Verify articles CRUD operations @crud', () => {
 
       const responseArticleJson = await responseArticle.json();
 
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-
       articleId = responseArticleJson.id;
+
+      await expect(async () => {
+        const responseArticleCreated = await request.get(
+          `${apiLinks.articlesUrl}/${articleId}`,
+          {
+            headers,
+          },
+        );
+
+        expect(
+          responseArticleCreated.status(),
+          `Expect to 200 to be ${responseArticleCreated.status()}`,
+        ).toBe(200);
+      }).toPass({ timeout: 2_000 });
     },
   );
 
@@ -59,7 +71,22 @@ test.describe('Verify articles CRUD operations @crud', () => {
         headers: headers,
         data: commentsData,
       });
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+
+      const commentsJson = await responseComments.json();
+      await expect(async () => {
+        const commentId = commentsJson.id;
+        const responseCommentsCreated = await request.get(
+          `${apiLinks.commentsUrl}/${commentId}`,
+          {
+            headers,
+          },
+        );
+
+        expect(
+          responseCommentsCreated.status(),
+          `Expect to 200 to be ${responseCommentsCreated.status()}`,
+        ).toBe(200);
+      }).toPass({ timeout: 2_000 });
     });
 
     test('should create a comment with a logged-in user', async () => {
