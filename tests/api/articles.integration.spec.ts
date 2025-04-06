@@ -1,5 +1,6 @@
 import { expect, test } from '@_src/fixtures/merge-fixtures';
 import {
+  apiLinks,
   generateArticlePayload,
   getAuthorizationHeader,
 } from '@_src/utils/api.util';
@@ -10,11 +11,10 @@ test.describe('Verify articles CRUD operations @crud', () => {
   }) => {
     // Arrange
     const expectedResponseCode = 401;
-    const articlesUrl = '/api/articles';
 
     const articleData = generateArticlePayload();
 
-    const response = await request.post(articlesUrl, {
+    const response = await request.post(apiLinks.articlesUrl, {
       data: articleData,
     });
 
@@ -26,7 +26,6 @@ test.describe('Verify articles CRUD operations @crud', () => {
   }) => {
     // Arrange
     const expectedResponseCode = 201;
-    const articlesUrl = '/api/articles';
 
     //login
 
@@ -34,7 +33,7 @@ test.describe('Verify articles CRUD operations @crud', () => {
 
     const articleData = generateArticlePayload();
 
-    const responseArticle = await request.post(articlesUrl, {
+    const responseArticle = await request.post(apiLinks.articlesUrl, {
       headers,
       data: articleData,
     });

@@ -3,6 +3,11 @@ import { prepareRandomComment } from '@_src/factory/comment.factory';
 import { testUser1 } from '@_src/test-data/user-date';
 import { APIRequestContext } from '@playwright/test';
 
+export const apiLinks = {
+  articlesUrl: '/api/articles',
+  commentsUrl: '/api/comments',
+  loginUrl: '/api/login',
+};
 interface Headers {
   [key: string]: string;
 }
@@ -10,14 +15,12 @@ interface Headers {
 export async function getAuthorizationHeader(
   request: APIRequestContext,
 ): Promise<Headers> {
-  const loginUrl = '/api/login';
-
   const userData = {
     email: testUser1.userEmail,
     password: testUser1.userPassword,
   };
 
-  const responseLogin = await request.post(loginUrl, {
+  const responseLogin = await request.post(apiLinks.loginUrl, {
     data: userData,
   });
 
