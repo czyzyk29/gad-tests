@@ -3,7 +3,7 @@ import { prepareRandomComment } from '@_src/factory/comment.factory';
 import { testUser1 } from '@_src/test-data/user-date';
 import { APIRequestContext } from '@playwright/test';
 
-interface CommentPayload {
+export interface CommentPayload {
   article_id: number;
   body: string;
   date: string;

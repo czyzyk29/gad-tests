@@ -1,17 +1,20 @@
 import { expect, test } from '@_src/fixtures/merge-fixtures';
 import {
+  CommentPayload,
+  Headers,
   apiLinks,
   generateArticlePayload,
   generateCommentPayload,
   getAuthorizationHeader,
 } from '@_src/utils/api.util';
+import { APIResponse } from '@playwright/test';
 
 test.describe('Verify articles CRUD operations @crud', () => {
   let articleId: number;
-  let headers: { [key: string]: string };
+  let headers: Headers;
 
   test.beforeAll(
-    'should not create an commnets with a logged-in user',
+    'should not create a comment with a logged-in user',
     async ({ request }) => {
       headers = await getAuthorizationHeader(request);
 
@@ -22,11 +25,11 @@ test.describe('Verify articles CRUD operations @crud', () => {
         data: articleData,
       });
 
-      const reponseArticleJson = await responseArticle.json();
+      const responseArticleJson = await responseArticle.json();
 
       await new Promise((resolve) => setTimeout(resolve, 5000));
 
-      articleId = reponseArticleJson.id;
+      articleId = responseArticleJson.id;
     },
   );
 
@@ -45,29 +48,86 @@ test.describe('Verify articles CRUD operations @crud', () => {
     expect(response.status()).toBe(expectedResponseCode);
   });
 
-  test('should not create an commnets with a logged-in user', async ({
-    request,
-  }) => {
-    // Arrange
-    const expectedResponseCode = 201;
+  test.describe('Verify articles CRUD operations @crud', () => {
+    let responseComments: APIResponse;
+    let commentsData: CommentPayload;
 
-    //Comments
-
-    const commentsData = generateCommentPayload(articleId);
-
-    const responseComments = await request.post(apiLinks.commentsUrl, {
-      headers: headers,
-      data: commentsData,
+    test.beforeEach('create an comment', async ({ request }) => {
+      // Arrange
+      commentsData = generateCommentPayload(articleId);
+      responseComments = await request.post(apiLinks.commentsUrl, {
+        headers: headers,
+        data: commentsData,
+      });
+      await new Promise((resolve) => setTimeout(resolve, 5000));
     });
 
-    const actualResponseStatus = responseComments.status();
-    expect(
-      actualResponseStatus,
-      `expected status code  ${expectedResponseCode} and recived ${actualResponseStatus}`,
-    ).toBe(expectedResponseCode);
+    test('should create a comment with a logged-in user', async () => {
+      // Arrange
+      const expectedResponseCode = 201;
 
-    const comments = await responseComments.json();
+      const actualResponseStatus = responseComments.status();
+      expect(
+        actualResponseStatus,
+        `expected status code  ${expectedResponseCode} and received ${actualResponseStatus}`,
+      ).toBe(expectedResponseCode);
 
-    expect.soft(comments.body).toEqual(commentsData.body);
+      const commentsJson = await responseComments.json();
+
+      expect.soft(commentsJson.body).toEqual(commentsData.body);
+    });
+
+    test('should delete an comment with a logged-in user', async ({
+      request,
+    }) => {
+      // Arrange
+      const expectedResponseCode = 200;
+      const commentsJson = await responseComments.json();
+      const commentId = commentsJson.id;
+      const responseCommentsDeleted = await request.delete(
+        `${apiLinks.commentsUrl}/${commentId}`,
+        {
+          headers: headers,
+        },
+      );
+
+      const actualResponseStatus = responseCommentsDeleted.status();
+      expect(
+        actualResponseStatus,
+        `expected status code  ${expectedResponseCode} and received ${actualResponseStatus}`,
+      ).toBe(expectedResponseCode);
+
+      const actualResponseGet = await request.get(
+        `${apiLinks.commentsUrl}/${commentId}`,
+        {
+          headers: headers,
+        },
+      );
+
+      const expectedDeletedCommentStatusCode = 404;
+      expect(
+        actualResponseGet.status(),
+        `status code expected ${expectedDeletedCommentStatusCode} but received ${actualResponseGet.status()}`,
+      ).toBe(expectedDeletedCommentStatusCode);
+    });
+
+    test('should not delete a comment with a non logged-in user', async ({
+      request,
+    }) => {
+      // Arrange
+      const expectedResponseCode = 401;
+      const commentsJson = await responseComments.json();
+      const commentId = commentsJson.id;
+      const responseCommentsDeleted = await request.delete(
+        `${apiLinks.commentsUrl}/${commentId}`,
+        {},
+      );
+
+      const actualResponseStatus = responseCommentsDeleted.status();
+      expect(
+        actualResponseStatus,
+        `expected status code  ${expectedResponseCode} and received ${actualResponseStatus}`,
+      ).toBe(expectedResponseCode);
+    });
   });
 });
